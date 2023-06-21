@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main class="main-content">
+        <div class="container-fluid">
+            <div >
+<div class="col-lg-12">
+    <div class="card timeline shadow">
+      <div class="card-header">
+        <strong class="card-title">ملاحظات تكليف {{task.title}}</strong>
+        <div class="float-right"><span {% if task.state == "جاري التنفيذ" %} class="badge badge-pill badge-danger"
+          {% elif task.state == "بإنتظار تأكيد الإنهاء" %}class="badge badge-pill badge-warning" {% else %}
+          class="badge badge-pill badge-success" {% endif %} >{{ task.state }}</span></div>
+      </div>
+      <div class="card-body" data-simplebar="init" style="height:355px; overflow-y: auto; overflow-x: hidden;"><div class="simplebar-wrapper" style="margin: -20px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="left: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 20px;">
+
+        {% for note in notes %}
+        <div class="pb-3 timeline-item {% if note.task.state == 'تم إنجازه' %}item-success{% elif note.task.state == 'جاري التنفيذ' %}item-danger{% else %}item-warning{% endif %}">
+          <div class="pl-5">
+            <div class="mb-3"><strong> {{note.officer.rank}} / {{note.officer.officer_name}} </strong><span class="text-muted small mx-2"> قام بوضع ملحوظة على تكليف </span><strong> {{note.task.title}}</strong></div>
+            <div class="card d-inline-flex mb-2">
+              <div class="card-body bg-light py-2 px-3 rounded" > {{note.note}}</div>
+            </div>
+            <p class="small text-muted">{{note.created}}
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div></div></div></div><div class="simplebar-placeholder" style="width: 825px; height: 1243px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 101px; transform: translate3d(0px, 45px, 0px); display: block;"></div></div></div>
+       <!-- / .card-body -->
+    <div class = "card-footer">
+      <form method="post" action="{% url 'add_note' task.id %}" >
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1" class="sr-only">ملاحظة</label>
+          <textarea class="form-control bg-light"
+          name="notes"
+          id="exampleFormControlTextarea1"
+          rows="2"></textarea>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          {% if request.user.officer.role == '1' %}
+            
+          <div class="form-check form-check-inline ml-1">
+            <a type="button" class="btn btn-danger {% if task.state == 'تم إنجازه' %}disabled{% endif %}" href="{% url 'end_task' task.id %}">إنهاء التكليف</a>
+          </div>
+            
+          {% endif %}
+          {% if task.state != 'تم إنجازه' %}
+          <button type="submit" class="btn btn-primary ">إضافة ملاحظة</button>
+          {% endif %}
+        </div>
+      </form></div>
+    </div> 
+<!-- / .card -->
+  </div>
+  
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

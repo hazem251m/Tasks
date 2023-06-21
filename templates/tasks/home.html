@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>.dataTables_wrapper   .dataTables_filter{
+    float: left
+}
+
+.dataTables_wrapper  .dataTables_length{
+    float: right
+}</style>
+    <main class="main-content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow bg-dark text-white">
+                                <a href="{% url 'home'%}" class="text-white">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <small class="mb-1 text-white">الكل</small>
+                                                <h3 class="card-title mb-0 text-white">{{all_tasks}}</h3>
+                                            </div>
+                                            <div class="col-4 text-right">
+                                                <span class="inlinebar"><canvas width="40" height="32"
+                                                                                style="display: inline-block; width: 40px; height: 32px; vertical-align: top;"></canvas></span>
+                                            </div>
+                                        </div> <!-- /. row -->
+                                    </div>
+                                </a> <!-- /. card-body -->
+                            </div> <!-- /. card -->
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow bg-success text-white">
+                                <a href="{% url 'home'%}?state={{ 'تم إنجازه' }}" class="text-white">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <small class="mb-1 text-white">تكليفات مكتملة</small>
+                                                <h3 class="card-title mb-0 text-white">{{completed_tasks}}</h3>
+                                            </div>
+                                            <div class="col-4 text-right">
+                                                <span class="inlinebar"><canvas width="40" height="32"
+                                                                                style="display: inline-block; width: 40px; height: 32px; vertical-align: top;"></canvas></span>
+                                            </div>
+                                        </div> <!-- /. row -->
+                                    </div>
+                                </a> <!-- /. card-body -->
+                            </div> <!-- /. card -->
+                        </div> <!-- /. col -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow bg-warning text-white">
+                                <a  href="{% url 'home'%}?state={{ 'بإنتظار تأكيد الإنهاء' }}" class="text-white">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                
+                                                <small class="text-white mb-1">تكليفات تحت المراجعة</small>
+                                                <h3 class="card-title mb-0 text-white">{{pending_tasks}}</h3>
+                                            </div>
+                                            <div class="col-4 text-right">
+                                                <span class="inlineline"><canvas width="92" height="32"
+                                                                                 style="display: inline-block; width: 92.2125px; height: 32px; vertical-align: top;"></canvas></span>
+                                            </div>
+                                        </div> <!-- /. row -->
+                                    </div>
+                                </a> <!-- /. card-body -->
+                            </div> <!-- /. card -->
+                        </div> <!-- /. col -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow bg-danger-light">
+                                <a href="{% url 'home'%}?state={{ 'جاري التنفيذ' }}" class="text-white">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <small class="text-white mb-1"> تكليفات جاري تنفيذها</small>
+                                                <h3 class="card-title mb-0 text-white">{{working_on_tasks}}</h3>
+                                            </div>
+                                            <div class="col-4 text-right">
+                                                <span class="inlinepie"><canvas width="32" height="32"
+                                                                                style="display: inline-block; width: 32px; height: 32px; vertical-align: top;"></canvas></span>
+                                            </div>
+                                        </div> <!-- /. row -->
+                                    </div>
+                                </a> <!-- /. card-body -->
+                            </div> <!-- /. card -->
+                        </div> <!-- /. col -->
+                    </div>
+                </div>
+                
+                <div class = "col-12">
+                    {% if request.user.officer.role == '1' %}
+                    <a type="button" class="btn mb-2 btn-primary float-left" href="{% url 'add_task' %}">إضافة تكليف
+                        جديد</a>
+                        {% endif %}
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover table-bordered table-striped task-table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th data-field="id" data-sortable="true">رقم التكليف</th>
+                            <th>عنوان التكليف</th>
+                            <th>وصف التكليف</th>
+                            <th>بداية التكليف</th>
+                            <th>نهاية التكليف</th>
+                            <th>الضباط المعنيين</th>
+                            <th>حالة التكليف</th>
+                            <th>خيارات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in page_obj %}
+                            <tr >
+                                <td>{{ task.id }}</td>
+                                <td>{{ task.title }}</td>
+                                <td>{{ task.description }}</td>
+                                <td>{{ task.start_date|date:"d/m/Y" }}</td>
+                                <td>{{ task.end_date|date:"d/m/Y" }}</td>
+                                
+                                <td>{% for officer in task.officers.all %}{{officer.rank}}/{{officer.officer_name}}, {% endfor %}</td>
+                                
+                                <td><span {% if task.state == "جاري التنفيذ" %} class="badge badge-pill badge-danger"
+                                                                                {% elif task.state == "بإنتظار تأكيد الإنهاء" %}class="badge badge-pill badge-warning" {% else %}
+                                                                                class="badge badge-pill badge-success" {% endif %} >{{ task.state }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm dropdown-toggle" type="button" id="dr5" data-id="{{ task.id }}"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="text-muted sr-only">Action</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dr5">
+                                            <a class="dropdown-item" href="{% url 'preview_task' task.id %}"target="_blank">عرض التكليف</a>
+                                            <a class="dropdown-item" href="{% url 'task_notes' task.id %}" target="_blank">عرض الملاحظات</a>
+                                            <a class="dropdown-item" href="{% url 'end_task' task.id %}">إنهاء</a>
+                                            {% if request.user.officer.role == '1' %}<a class="dropdown-item" href="{% url 'delete_task' task.id %}">حذف</a>{%endif%}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+<script>
+$(document).ready(function() {
+    $('.task-table').DataTable({
+        "lengthChange": false,
+        "bInfo" : false,
+        "language": {
+    "search": "بحث : "
+            },
+
+    });
+} );
+</script>
+{% endblock %}

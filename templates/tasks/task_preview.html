@@ -1,0 +1,154 @@
+{% include 'base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <div class="container-fluid">
+      <div class="card shadow mb-4">
+        <div class="card-header">
+          <strong class="card-title">تعديل التكليف رقم {{target_task.id}}</strong>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'add_task' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group row">
+              <label for="inputEmail3" class="col-sm-3 col-form-label"
+                >عنوان التكليف</label
+              >
+              <div class="col-sm-9">
+                <input name="title" class="form-control" value="{{target_task.title}}" disabled />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3" for="exampleFormControlTextarea1"
+                >وصف التكليف</label
+              >
+              <div class="col-sm-9">
+                <textarea
+                  name="description"
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="2"
+                  data-value="{{ form.description }} "
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="disabledInput" class="col-sm-3 col-form-label"
+                >تاريخ بداية التكليف</label
+              >
+              <div class="input-group col-sm-9">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control drgpicker"
+                    id="date-input1"
+                    name="start_date"
+                    aria-describedby="button-addon2"
+                    value="{{ today }}"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text" id="button-addon-date">
+                      <span class="fe fe-calendar fe-16"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="disabledInput" class="col-sm-3 col-form-label"
+                >تاريخ نهاية التكليف</label
+              >
+              <div class="input-group col-sm-9">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control drgpicker"
+                    id="date-input1"
+                    name="end_date"
+                    aria-describedby="button-addon2"
+                    value="{{ today }}"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text" id="button-addon-date">
+                      <span class="fe fe-calendar fe-16"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="disabledInput" class="col-sm-3 col-form-label"
+                >الضباط المكلفين</label
+              >
+              <div class="col-9">
+                <select
+                  id="choices-multiple-remove-button"
+                  name="officers"
+                  multiple
+                >
+                  {% for officer in officers %}
+                  <option value="{{ officer.id }}">{{officer.rank }}/{{ officer.officer_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3" for="exampleFormControlTextarea1"
+                >ملاحظات</label
+              >
+              <div class="col-sm-9">
+                <textarea
+                  name="notes"
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3" for="exampleFormControlTextarea1">مرفقات</label>
+              <div class="col-sm-9">
+              <input
+                  type="file"
+                  class="custom-file-input attachement"
+                  id="attachement"
+                  name="attachement"
+                  onchange="updateLabel()"/>
+              <label class="custom-file-label" for="customFile" id="file-label">اختر ملف</label>
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <button type="submit" class="btn btn-primary">إضافة التكليف</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+      function updateLabel() {
+    var fileInput = document.getElementById('attachement');
+    var fileLabel = document.getElementById('file-label');
+    
+    if (fileInput.files.length > 0) {
+      fileLabel.innerHTML = fileInput.files[0].name;
+    } else {
+      fileLabel.innerHTML = 'Select a file';
+    }
+  }
+    $(document).ready(function () {
+      var multipleCancelButton = new Choices("#choices-multiple-remove-button", {
+        removeItemButton: true,
+      });
+      $(".drgpicker").daterangepicker({
+        singleDatePicker: true,
+        timePicker: false,
+        showDropdowns: true,
+        locale: {
+          format: "DD/MM/YYYY",
+        },
+      });
+    });
+  </script>
+{% endblock %}

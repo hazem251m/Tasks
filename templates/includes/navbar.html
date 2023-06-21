@@ -1,0 +1,147 @@
+{% load static %}
+<nav class="topnav navbar navbar-light">
+  <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar" id ="asideCollapse">
+    <i class="fe fe-menu navbar-toggler-icon"></i>
+  </button>
+  <ul class="nav">
+    <li class="nav-item" >
+      <h6 style="margin: 12px;">{{request.user.officer.rank}} / {{request.user.officer.officer_name}}</h6>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="avatar avatar-sm mt-2">
+          <img src="{% static 'images/profile.png' %}" alt="..." class="avatar-img rounded-circle">
+        </span>
+      </a>
+ 
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+        <a class="dropdown-item" href="{% url 'logout' %}">تسجيل الخروج</a>
+      </div>
+    </li>
+  </ul>
+</nav>
+<aside
+  class="sidebar-left border-right bg-white shadow"
+  id="leftSidebar"
+  data-simplebar
+>
+  <a
+    href="#"
+    class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3"
+    data-toggle="toggle"
+  >
+    <i class="fe fe-x"><span class="sr-only"></span></i>
+  </a>
+  <nav class="vertnav navbar navbar-light">
+    <!-- nav bar -->
+    <div class="w-100 mb-4 d-flex">
+        <p class="navbar-brand mx-auto mt-2 flex-fill text-center">منظومة التكليفات</p>
+    </div>
+    <ul class="navbar-nav flex-fill w-100 mb-2">
+      <li class="nav-item dropdown">
+        <a
+          href="#dashboard"
+          data-toggle="collapse"
+          aria-expanded="false"
+          class="dropdown-toggle nav-link"
+        >
+          <i class="fe fe-edit fe-16"></i>
+          <span class="ml-3 item-text">التكليفات</span
+          ><span class="sr-only">(current)</span>
+        </a>
+        <ul class="collapse list-unstyled pl-4 w-100" id="dashboard">
+          <li class="nav-item active">
+            <a class="nav-link pl-3" href="{% url 'home' %}"
+              ><span class="ml-1 item-text">جميع التكليفات</span></a
+            >
+          </li>
+          {% if request.user.officer.role == '1' %}
+          <li class="nav-item">
+            <a class="nav-link pl-3" href="{% url 'add_task' %}"
+              >
+              <span class="ml-1 item-text">إضافة تكليف جديد</span></a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+
+    <!-- <ul class="navbar-nav flex-fill w-100 mb-2">
+      <li class="nav-item w-100">
+        <a class="nav-link" href="">
+          <i class="fe fe-archive fe-16"></i>
+          <span class="ml-3 item-text">الملاحظات الشخصية</span>
+        </a>
+      </li>
+    </ul> -->
+    
+  </nav>
+
+  <script>
+    
+  $(".collapseSidebar").on("click", function (e) {
+    $(".vertical").hasClass("narrow")
+      ? $(".vertical").toggleClass("open")
+      : ($(".vertical").toggleClass("collapsed"),
+        $(".vertical").hasClass("hover") &&
+          $(".vertical").removeClass("hover")),
+      e.preventDefault();
+  }),
+  $(".sidebar-left").hover(
+    function () {
+      $(".vertical").hasClass("collapsed") && $(".vertical").addClass("hover"),
+        $(".narrow").hasClass("open") || $(".vertical").addClass("hover");
+    },
+    function () {
+      $(".vertical").hasClass("collapsed") &&
+        $(".vertical").removeClass("hover"),
+        $(".narrow").hasClass("open") || $(".vertical").removeClass("hover");
+    }
+  ),
+  $(".toggle-sidebar").on("click", function () {
+    $(".navbar-slide").toggleClass("show");
+  }),
+  (function (a) {
+    a(".dropdown-menu a.dropdown-toggle").on("click", function (e) {
+      return (
+        a(this).next().hasClass("show") ||
+          a(this)
+            .parents(".dropdown-menu")
+            .first()
+            .find(".show")
+            .removeClass("show"),
+        a(this).next(".dropdown-menu").toggleClass("show"),
+        a(this)
+          .parents("li.nav-item.dropdown.show")
+          .on("hidden.bs.dropdown", function (e) {
+            a(".dropdown-submenu .show").removeClass("show");
+          }),
+        !1
+      );
+    });
+  })(jQuery),
+  $(".navbar .dropdown").on("hidden.bs.dropdown", function () {
+    $(this).find("li.dropdown").removeClass("show open"),
+      $(this).find("ul.dropdown-menu").removeClass("show open");
+  }),
+  $(".file-panel .card").on("click", function () {
+    $(this).hasClass("selected")
+      ? ($(this).removeClass("selected"),
+        $(this).find("bg-light").removeClass("shadow-lg"),
+        $(".file-container").removeClass("collapsed"))
+      : ($(this).addClass("selected"),
+        $(this).addClass("shadow-lg"),
+        $(".file-panel .card").not(this).removeClass("selected"),
+        $(".file-container").addClass("collapsed"));
+  }),
+  $(".close-info").on("click", function () {
+    $(".file-container").hasClass("collapsed") &&
+      ($(".file-container").removeClass("collapsed"),
+      $(".file-panel").find(".selected").removeClass("selected"));
+  }),
+  $(function () {
+    $(".info-content").stickOnScroll({ topOffset: 0, setWidthOnStick: !0 });
+  });
+  </script>
+</aside>

@@ -1,0 +1,96 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block navbar %}{% endblock navbar %}
+<style>
+  .bg-image-vertical {
+    position: relative;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: auto 100%;
+  }
+
+  @media (min-width: 1025px) {
+    .h-custom-2 {
+      height: 100%;
+    }
+  }
+</style>
+{% block content %}
+<section class="vh-100">
+  <div class="container-fluid">
+    <div class="row">
+      <div
+        class="col-sm-6 text-black"
+        style="
+          align-items: center;
+          display: grid;
+          align-content: center;
+          justify-content: center;
+        "
+      >
+        <div class="px-5 ms-xl-4 text-center">
+          <i
+            class="fas fa-crow fa-2x me-3 pt-5 mt-xl-4"
+            style="color: #709085"
+          ></i>
+          <span class="h1 fw-bold mb-0">       .</span>
+        </div>
+
+        <div
+          class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-xl-0 mt-xl-n5"
+        >
+          <form
+          action="{% url 'login' %}"
+          method="post"
+          enctype="multipart/form-data"
+           style="width: 23rem">
+           {% csrf_token %}
+            <div class="form-outline mb-4">
+              <label class="form-label" for="form2Example18"
+                >اسم المستخدم</label
+              >
+              <input class="form-control form-control" name = "username" />
+            </div>
+
+            <div class="form-outline mb-4">
+              <label class="form-label" for="form2Example28">كلمة المرور</label>
+              <input
+                type="password"
+                id="form2Example28"
+                class="form-control form-control"
+                name="password"
+              />
+            </div>
+
+            <div class="pt-1 mb-4">
+              <button class="btn btn-primary btn btn-block" type="submit">
+                تسجيل دخول
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              {% if form.non_field_errors %}
+              <ul class="form-errors">
+                {% for error in form.non_field_errors %}
+                <li style="color: red">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+      </div>
+      <div class="col-sm-6 px-0 d-none d-sm-block">
+        <img
+          src="{% static 'images/Vertical_Flag_of_Egypt.svg' %}"
+          alt="Login image"
+          class="w-100 vh-100"
+          style="object-fit: cover; object-position: left"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
